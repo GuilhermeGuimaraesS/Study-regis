@@ -1,0 +1,13 @@
+{% extends "study_register/base.html" %}
+
+{% block content %}
+    <p>Tópicos: </p>
+    <ul>
+        {% for topic in topics %}
+            <li>{{ topic }}</li>
+        {% empty %}
+            <li>Não há tópicos adicionados.</li>
+        {% endfor %}
+    </ul>
+
+{% endblock content %}
