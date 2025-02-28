@@ -1,5 +1,8 @@
 from django.shortcuts import render
+from django.urls import reverse
 from .models import Topic
+from .forms import TopicForm
+from django.http import HttpResponseRedirect
 
 def index(request):
     return render(request, 'study_register/index.html')
@@ -7,15 +10,44 @@ def index(request):
 
 def topics(request):
     """Mostra todos os temas de resumos."""
-    topics = Topic.objects.order_by('date_added') # Pega os tópicos contidos no banco de dados
-    context = {'topics': topics} # Dicionário contendo os tópicos que foram obtidos do banco de dados
+    # Pega os tópicos contidos no banco de dados
+    topics = Topic.objects.order_by('date_added') 
+    # Dicionário contendo os tópicos que foram obtidos do banco de dados
+    context = {'topics': topics} 
     return render(request,'study_register/topics.html', context)
 
 
 def topic(request, topic_id):
     """Mostra os resumos de um tema escolhido."""
-    topic = Topic.objects.get(id = topic_id)
-    entries = topic.entry_set.order_by('-date_added')
-    context = {'topic': topic, 'entries': entries}
-    return render(request, 'study_register/topic.html', context)
+    # Pega o tópico escolhido utilizando o id passado na requisição
+    topic = Topic.objects.get(id = topic_id) 
+    # Pega as entradas do tópico por data de inserção
+    entries = topic.entry_set.order_by('-date_added') 
+    # Dicionário com o tópico e as entradas
+    context = {'topic': topic, 'entries': entries} 
+    # Retorna o tópico e as anotações para página 'topic'
+    return render(request, 'study_register/topic.html', context) 
+
+
+def new_topic(request):
+    """Registra um novo tópico de resumo."""
+    if request.method != 'POST':
+        # Nenhum dado enviado, cria um formulário em branco.
+        form = TopicForm()
+    else:
+        # Dados enviados, vai processar os dados.
+
+        # Formulário com os dados passados pelo usuário.
+        form = TopicForm(request.POST) 
+        # Verifica se os dados passados são válidos.
+        if form.is_valid():
+            form.save() 
+            return HttpResponseRedirect(reverse('topics'))
+        
+    context = {'form': form}
+    return render (request, 'study_register/new_topic.html', context)
+
+
+
+
 
