@@ -14,5 +14,5 @@ class EntryForm(forms.ModelForm):
         fields = ['text']
         labels = {'text': ''}
         # Cria uma área de texto com 80 colunas
-        widgets = {'text': forms.Textarea(attrs={'cols': 80})}
+        widgets = {'text': forms.Textarea(attrs={'cols': 100})}
 

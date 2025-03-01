@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Topic
+from .models import Topic, Entry
 from .forms import TopicForm, EntryForm 
 from django.http import HttpResponseRedirect
 
@@ -45,7 +45,7 @@ def new_topic(request):
             return HttpResponseRedirect(reverse('topics'))
         
     context = {'form': form}
-    return render (request, 'study_register/new_topic.html', context)
+    return render(request, 'study_register/new_topic.html', context)
 
 
 def new_entry(request, topic_id):
@@ -70,9 +70,29 @@ def new_entry(request, topic_id):
             return HttpResponseRedirect(reverse('topic', args=[topic_id]))
         
     context = {'topic': topic, 'form': form}
-    return render (request, 'study_register/new_entry.html', context)
+    return render(request, 'study_register/new_entry.html', context)
 
 
+def edit_entry(request, entry_id):
+    """Modifica uma entrada existente."""
+    # Pega a entrada que será editada.
+    entry = Entry.objects.get(id = entry_id)
+    # Pega o tópico em que a entrada está contida.
+    topic = entry.topic
 
+    if request.method != 'POST':
+        # Nenhum dado enviado, preenche o formulário com as anotações antigas.
+        form = EntryForm(instance=entry)
+    else:
+        # Entrada editada, vai processar os dados.
+        form = EntryForm(instance=entry, data=request.POST)
+        # Verifica a validade dos dados passados.
+        if form.is_valid():
+            # Salva os dados do form, mas não envia para o banco de dados.
+            form.save()
+            return HttpResponseRedirect(reverse('entry', args=[entry_id]))
+        
+    context = {'entry': entry, 'form': form}
+    return render(request, 'study_register/edit_entry.html', context)
 
 
