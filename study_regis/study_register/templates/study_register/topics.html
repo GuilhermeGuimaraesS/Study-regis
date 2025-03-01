@@ -1,7 +1,7 @@
 {% extends "study_register/base.html" %}
 
 {% block content %}
-    <p>Tópicos: </p>
+    <h3>Tópicos: </h3>
     <ul>
         {% for topic in topics %}
                 <li><a href="{% url 'topic' topic.id %}">{{ topic }}</a></li>

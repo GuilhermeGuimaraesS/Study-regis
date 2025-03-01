@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Topic
-from .forms import TopicForm
+from .forms import TopicForm, EntryForm 
 from django.http import HttpResponseRedirect
 
 def index(request):
@@ -46,6 +46,31 @@ def new_topic(request):
         
     context = {'form': form}
     return render (request, 'study_register/new_topic.html', context)
+
+
+def new_entry(request, topic_id):
+    """Registra uma nova entrada"""
+    # Pega o tópico que receberá a nova entrada
+    topic = Topic.objects.get(id = topic_id)
+
+    if request.method != 'POST':
+        # Nenhum dado enviado, cria um formulário em branco.
+        form = EntryForm()
+    else:
+        # Dados enviados, vai processar os dados.
+
+        # Formulário com os dados passados pelo usuário.
+        form = EntryForm(request.POST)
+        # Verifica se os dados passados são válidos.
+        if form.is_valid():
+            # Salva os dados do form, mas não envia para o banco de dados.
+            new_entry = form.save(commit=False)
+            new_entry.topic = topic
+            new_entry.save()
+            return HttpResponseRedirect(reverse('topic', args=[topic_id]))
+        
+    context = {'topic': topic, 'form': form}
+    return render (request, 'study_register/new_entry.html', context)
 
 
 
