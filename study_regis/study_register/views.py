@@ -88,11 +88,12 @@ def edit_entry(request, entry_id):
         form = EntryForm(instance=entry, data=request.POST)
         # Verifica a validade dos dados passados.
         if form.is_valid():
-            # Salva os dados do form, mas não envia para o banco de dados.
+            # Salva os dados do form
             form.save()
-            return HttpResponseRedirect(reverse('entry', args=[entry_id]))
-        
-    context = {'entry': entry, 'form': form}
+            return HttpResponseRedirect(reverse('topic', args=[topic.id]))
+
+    context = {'entry': entry, 'topic': topic, 'form': form}
     return render(request, 'study_register/edit_entry.html', context)
 
 
+    
