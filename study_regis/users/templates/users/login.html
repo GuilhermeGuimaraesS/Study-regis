@@ -1,0 +1,19 @@
+{% extends "study_register/base.html" %}
+
+{% block content %}
+
+    {% if form.erros %}
+        <p>Seu login e senha estão incorretos. Tente novamente</p>
+    {% endif %}
+
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button name="submit">Registrar</button>
+        <!-- Se o login for realizado, redireciona o usuário para a página principal. -->
+        <input type="hidden" name="next" value="{% url 'index' %}"/>
+
+    </form>
+
+{% endblock content %}
